@@ -86,6 +86,13 @@ func main() {
 		hm.GetPIO(goble.PIN_2).Param,
 	)
 
+	//EnableBeaconMode
+	fmt.Println(hm.FactoryReset().Result)
+	fmt.Println(hm.SetBeaconMode(goble.BEACON_ENABLE).Result)
+	fmt.Println(hm.GetBeaconMode().Param)
+	fmt.Println(hm.SetAdvertasingInterval(5).Result)
+	fmt.Println(hm.Reset().Result)
+
 	//Close
 	hm.Close()
 }
