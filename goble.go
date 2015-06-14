@@ -3,85 +3,16 @@ package goble
 
 import (
 	"fmt"
-	"os"
+	"github.com/MarinX/serial"
 	"strings"
-	"syscall"
-	"unsafe"
+	"time"
 )
-
-const (
-	AT_GET_DEVICE_NAME     = "AT+NAME?"
-	AT_SET_DEVICE_NAME     = "AT+NAME%s"
-	AT_RESET               = "AT+RESET"
-	AT_GET_MODE            = "AT+MODE?"
-	AT_SET_MODE            = "AT+MODE%d"
-	AT_FACTORY             = "AT+RENEW"
-	AT_GET_PIN             = "AT+PASS?"
-	AT_SET_PIN             = "AT+PASS%d"
-	AT_SOFWATE_VERSION     = "AT+VERS?"
-	AT_LAST_DEVICE_ADDRESS = "AT+RADD?"
-	AT_RSSI                = "AT+RSSI?"
-	AT_CLEAR               = "AT+CLEAR"
-	AT_GET_BOUND_MODE      = "AT+TYPE?"
-	AT_SET_BOUND_MODE      = "AT+TYPE%d"
-)
-
-type BleMode int
-type BleBondMode int
-
-//Ble mode
-const (
-	TRANSMISSION  BleMode = 0
-	REMOTE        BleMode = 1
-	ZERO_PLUS_ONE BleMode = 2
-)
-
-//Ble bond mode
-const (
-	NOT_NEED_PIN_CODE BleBondMode = 0
-	NEEDED_PIN_CODE   BleBondMode = 1
-)
-
-type Ble struct {
-	fd *os.File
-}
-
-type BleResponse struct {
-	Error  error
-	Result string
-	Param  interface{}
-}
 
 func New(dev string) (*Ble, error) {
 
-	f, err := os.OpenFile(dev, syscall.O_RDWR|syscall.O_NOCTTY|syscall.O_NONBLOCK, 0666)
+	c := &serial.Config{Name: dev, Baud: 9600, ReadTimeout: 1 * time.Second}
+	f, err := serial.OpenPort(c)
 	if err != nil {
-		return nil, err
-	}
-
-	t := syscall.Termios{
-		Iflag:  syscall.IGNPAR,
-		Cflag:  syscall.CS8 | syscall.CREAD | syscall.CLOCAL | syscall.B9600,
-		Cc:     [32]uint8{syscall.VMIN: 64, syscall.VTIME: 1},
-		Ispeed: syscall.B9600,
-		Ospeed: syscall.B9600,
-	}
-
-	fd := f.Fd()
-
-	if _, _, errno := syscall.Syscall6(
-		syscall.SYS_IOCTL,
-		uintptr(fd),
-		uintptr(syscall.TCSETS),
-		uintptr(unsafe.Pointer(&t)),
-		0,
-		0,
-		0,
-	); errno != 0 {
-		return nil, errno
-	}
-
-	if err = syscall.SetNonblock(int(fd), false); err != nil {
 		return nil, err
 	}
 
@@ -132,6 +63,14 @@ func (t *Ble) GetLastConnectedDeviceAddress() *BleResponse {
 
 func (t *Ble) GetRSSI() *BleResponse {
 	return t.write_read(AT_RSSI)
+}
+
+func (t *Ble) GetPIO(pio BlePIOPin) *BleResponse {
+	return t.write_read(fmt.Sprintf(AT_GET_PIO, pio))
+}
+
+func (t *Ble) SetPIO(pio BlePIOPin, value BlePIO) *BleResponse {
+	return t.write_read(fmt.Sprintf(AT_SET_PIO, pio, int(value)))
 }
 
 func (t *Ble) Reset() *BleResponse {
