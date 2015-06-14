@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	//Locate your dev
+	//Locate your dev, on Windows is COM4 or equivalent
 	hm, err := goble.New("/dev/ttyUSB2")
 	if err != nil {
 		fmt.Println(err)
