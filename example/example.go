@@ -9,7 +9,7 @@ import (
 func main() {
 
 	//Locate your dev
-	hm, err := goble.New("/dev/ttyUSB1")
+	hm, err := goble.New("/dev/ttyUSB2")
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -66,6 +66,24 @@ func main() {
 	fmt.Println(
 		"Bound mode:",
 		hm.GetBoundMode().Param,
+	)
+
+	//Get PIO Pin status
+	fmt.Println(
+		"PIO 2 status(0-LOW, 1-HIGH):",
+		hm.GetPIO(goble.PIN_2).Param,
+	)
+
+	//Set PIO Pin to HIGH
+	fmt.Println(
+		"Setting PIO Pin 2 to HIGH (0-LOW, 1-HIGH)",
+		hm.SetPIO(goble.PIN_2, goble.HIGH).Result,
+	)
+
+	//Now check the status
+	fmt.Println(
+		"PIO 2 status (0-LOW, 1-HIGH):",
+		hm.GetPIO(goble.PIN_2).Param,
 	)
 
 	//Close
