@@ -18,8 +18,6 @@ Bluetooth Low Enery (HM10) module for Go
 <img src=https://raw.github.com/MarinX/goble/master/beacon.png 
 width=300 />
 
-#Blog post on how to setup
-[Bluetooth Low Energy for Go](http://0xc0008000.com/?p=37)
 
 #License
 This library is under the MIT License
