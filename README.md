@@ -1,15 +1,15 @@
-#Bluetooth Low Energy for Go (based od CC2541)
+# Bluetooth Low Energy for Go (based od CC2541)
 
-#Description
+# Description
 Bluetooth Low Enery (HM10) module for Go
 
-#Installation
+# Installation
     go get github.com/MarinX/goble
 
-#Example
+# Example
     See the example directory
 
-#Enable BeaconMode
+# Enable BeaconMode
     hm.FactoryReset()
 	hm.SetBeaconMode(goble.BEACON_ENABLE)
 	hm.GetBeaconMode()
@@ -19,7 +19,7 @@ Bluetooth Low Enery (HM10) module for Go
 width=300 />
 
 
-#License
+# License
 This library is under the MIT License
-#Author
+# Author
 Marin Basic 
